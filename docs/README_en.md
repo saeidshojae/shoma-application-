@@ -29,7 +29,7 @@
 
 1. **Clone the repository**:
    ```sh
-   git clone https://github.com/username/shoma-application.git
+   git clone https://github.com/saeidshojae/shoma-application.git
 Navigate to the project directory:
 
 sh
