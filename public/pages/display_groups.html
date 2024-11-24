@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نمایش گروه‌ها و اعضا</title>
+    <style>
+        .menu {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .menu button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .group-container {
+            margin-bottom: 20px;
+        }
+        .group {
+            font-weight: bold;
+        }
+        .subgroup {
+            margin-left: 20px;
+        }
+        .member {
+            margin-left: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu">
+        <button id="generalGroupsBtn">گروه‌های عمومی</button>
+        <button id="specialGroupsBtn">گروه‌های تخصصی</button>
+    </div>
+    <div id="groupsContainer"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        async function fetchGroups(type) {
+            try {
+                const response = await fetch(`http://localhost:3001/api/groups?type=${type}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const groups = await response.json();
+                return groups;
+            } catch (error) {
+                console.error('خطا در دریافت گروه‌ها:', error);
+                return [];
+            }
+        }
+
+        function displayGroups(containerId, data) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            for (const group in data) {
+                const groupContainer = document.createElement('div');
+                groupContainer.className = 'group-container';
+
+                const groupElement = document.createElement('div');
+                groupElement.className = 'group';
+                groupElement.innerText = group;
+
+                groupContainer.appendChild(groupElement);
+
+                if (Array.isArray(data[group])) {
+                    data[group].forEach(subgroup => {
+                        const subgroupElement = document.createElement('div');
+                        subgroupElement.className = 'subgroup';
+                        subgroupElement.innerText = subgroup;
+                        groupContainer.appendChild(subgroupElement);
+                    });
+                } else {
+                    for (const subgroup in data[group]) {
+                        const subgroupElement = document.createElement('div');
+                        subgroupElement.className = 'subgroup';
+                        subgroupElement.innerText = subgroup;
+                        groupContainer.appendChild(subgroupElement);
+                    }
+                }
+                container.appendChild(groupContainer);
+            }
+        }
+
+        document.getElementById('generalGroupsBtn').addEventListener('click', async function() {
+            const groups = await fetchGroups('general');
+            displayGroups('groupsContainer', groups);
+        });
+
+        document.getElementById('specialGroupsBtn').addEventListener('click', async function() {
+            const groups = await fetchGroups('special');
+            displayGroups('groupsContainer', groups);
+        });
+
+        (async function() {
+            const groups = await fetchGroups('general');
+            displayGroups('groupsContainer', groups);
+        })();
+    </script>
+</body>
+</html>
