@@ -29,7 +29,7 @@ markdown
 
 1. **کلون کردن مخزن**:
    ```sh
-   git clone https://github.com/username/shoma-application.git
+   git clone https://github.com/saeidshojae/shoma-application.git
 ورود به دایرکتوری پروژه:
 
 sh
