@@ -3,340 +3,373 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پروژه انتخاب تخصص</title>
-    <link rel="stylesheet" href="../styles/styles.css">
+    <title>فرم تعیین صنف و تخصص</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/shabnam-font@v3.0.1/dist/font-face.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f4f4;
+            font-family: 'Shabnam', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
-            height: 100vh;
-            margin: 0;
+            min-height: 100vh; /* تغییر از height به min-height برای سازگاری بیشتر */
+            direction: rtl;
         }
-        .container {
-            background-color: #fafbfc;
+        .form-container {
+            background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             width: 90%;
             max-width: 400px;
             box-sizing: border-box;
+            text-align: right;
+            direction: rtl;
         }
-        .container h2 {
-            margin-bottom: 30px;
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
             text-align: center;
+            color: #4CAF50;
         }
-        .form-group {
-            margin-bottom: 35px;
-            position: relative;
-        }
-        .form-group label {
-            display: block;
+        h2 {
+            font-size: 18px;
             margin-bottom: 10px;
+            color: #333;
         }
-        .form-group .input-container {
-            display: flex;
-            align-items: center;
+        .dropdown, .specialization-dropdown {
             position: relative;
+            display: inline-block;
             width: 100%;
+            margin-bottom: 15px;
         }
-        .form-group input {
-            width: calc(100% - 40px);
-            padding: 8px;
-            box-sizing: border-box;
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
+        .dropdown-content, .specialization-content {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
         }
-        .form-group .dropdown-button {
-            width: 40px;
-            height: 40px;
-            background-color: #0da85b;
-            color: rgb(249, 255, 255);
-            border: none;
+        .dropdown-content div, .specialization-content div {
+            padding: 10px;
             cursor: pointer;
-            border-top-right-radius: 5px;
-            border-bottom-right-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .dropdown-content div:hover, .specialization-content div:hover {
+            background-color: #e7f4ea;
+        }
+        .subcategories {
+            display: none;
+            background-color: #f9f9f9;
+            padding: 5px;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        .subcategory {
+            padding-right: 20px;
+            font-style: italic;
+            color: #555;
+        }
+        .selected-items, .selected-specializations {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            min-height: 40px;
+            box-sizing: border-box;
+        }
+        .selected-items:empty::before, .selected-specializations:empty::before {
+            content: 'از فهرست انتخاب کنید';
+            color: #aaa;
+            font-style: italic;
+        }
+        .item {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            margin: 5px;
+            border-radius: 5px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
         }
-        .form-group button[type="submit"] {
+        .remove-item {
+            margin-left: 10px;
+            cursor: pointer;
+            color: #f44336;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
             background-color: #4CAF50;
             color: white;
             border: none;
-            cursor: pointer;
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
             border-radius: 5px;
-            text-align: center;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+            font-family: 'Shabnam', sans-serif;
         }
-        .form-group button[type="submit"]:hover {
+        button:hover {
             background-color: #45a049;
         }
-        .dropdown-menu {
-            position: absolute;
-            display: none;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-            padding: 10px;
-            z-index: 1000;
-            width: 30%;
-            top: 100%;
-            left: 0;
-        }
-        .dropdown-item {
-            padding: 5px;
-            cursor: pointer;
-            position: relative;
-            border-bottom: 1px solid #ddd;
-        }
-        .dropdown-item:last-child {
-            border-bottom: none;
-        }
-        .dropdown-item:hover .nested-menu {
-            display: block;
-        }
-        .nested-menu {
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 100%;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-            padding: 10px;
-        }
-        .nested-item {
-            padding: 5px;
-            cursor: pointer;
-            border-bottom: 1px solid #ddd;
-        }
-        .nested-item:last-child {
-            border-bottom: none;
-        }
-        .nested-item:hover {
-            background-color: #f0f0f0;
-        }
-        .selected-item {
-            display: inline-block;
-            background-color: #d1ecf1;
-            padding: 5px;
-            margin: 2px;
-            border-radius: 3px;
-            position: relative;
-            margin-right: 5px;
-        }
-        .selected-item .remove-item {
-            position: absolute;
-            top: 0;
-            right: 0;
-            cursor: pointer;
-            padding: 2px 5px;
-            background-color: #ff6b6b;
-            color: white;
-            border-radius: 50%;
-        }
-        .form-group .selected-items {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            min-height: 40px;
-        }
-        .form-group .selected-items input {
-            border: none;
-            outline: none;
-            flex: 1;
-        }
-        @media (min-width: 600px) {
-            .container {
-                width: 400px;
+        @media (max-width: 600px) {
+            .form-container {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            button {
+                padding: 8px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>تخصص‌ها و زمینه‌های صنفی</h2>
-        <form id="specialtyForm">
-            <div class="form-group">
-                <label for="specialty">تخصص‌ها:</label>
-                <div class="selected-items" id="selectedSpecialties">
-                    <div class="input-container">
-                        <input type="text" id="specialty" placeholder="انتخاب کنید">
-                        <button type="button" class="dropdown-button">&#9662;</button>
+    <div class="form-container">
+        <h1>فرم تعیین صنف و تخصص</h1>
+        <h2>تعیین زمینه‌های صنفی</h2>
+        <div class="selected-items" id="selectedItemsContainer"></div>
+        <div class="dropdown">
+            <button onclick="toggleDropdown()">انتخاب صنف &#9662;</button>
+            <div id="dropdownContent" class="dropdown-content">
+                <div onclick="toggleSubcategories('صنعت', this)">صنعت</div>
+                <div class="subcategories" id="subcategories-industry">
+                    <div class="subcategory" onclick="selectItem('صنعت خودروسازی')">صنعت خودروسازی</div>
+                    <div class="subcategory" onclick="selectItem('صنعت الکترونیک')">صنعت الکترونیک</div>
+                    <div class="subcategory" onclick="selectItem('صنعت نفت و گاز')">صنعت نفت و گاز</div>
+                    <div class="subcategory" onclick="selectItem('صنعت فولاد')">صنعت فولاد</div>
+                    <div class="subcategory" onclick="selectItem('صنعت غذایی')">صنعت غذایی</div>
+                </div>
+                <div onclick="toggleSubcategories('کشاورزی', this)">کشاورزی</div>
+                <div class="subcategories" id="subcategories-agriculture">
+                    <div class="subcategory" onclick="selectItem('زراعت')">زراعت</div>
+                    <div class="subcategory" onclick="selectItem('کشاورزی ارگانیک')">کشاورزی ارگانیک</div>
+                    <div class="subcategory" onclick="selectItem('باغبانی')">باغبانی</div>
+                    <div class="subcategory" onclick="selectItem('دامپروری')">دامپروری</div>
+                    <div class="subcategory" onclick="selectItem('آبیاری')">آبیاری</div>
+                </div>
+                <div onclick="toggleSubcategories('تجارت', this)">تجارت</div>
+                <div class="subcategories" id="subcategories-commerce">
+                    <div class="subcategory" onclick="selectItem('بازرگانی داخلی')">بازرگانی داخلی</div>
+                    <div class="subcategory" onclick="selectItem('بازرگانی خارجی')">بازرگانی خارجی</div>
+                    <div class="subcategory" onclick="selectItem('مدیریت زنجیره تامین')">مدیریت زنجیره تامین</div>
+                    <div class="subcategory" onclick="selectItem('فروش و بازاریابی')">فروش و بازاریابی</div>
+                    <div class="subcategory" onclick="selectItem('تجارت الکترونیک')">تجارت الکترونیک</div>
+                </div>
+                <div onclick="toggleSubcategories('خدمات', this)">خدمات</div>
+                <div class="subcategories" id="subcategories-services">
+                    <div class="subcategory" onclick="selectItem('خدمات مالی')">خدمات مالی</div>
+                    <div class="subcategory" onclick="selectItem('خدمات بهداشتی')">خدمات بهداشتی</div>
+                    <div class="subcategory" onclick="selectItem('خدمات آموزشی')">خدمات آموزشی</div>
+                    <div class="subcategory" onclick="selectItem('خدمات حمل و نقل')">خدمات حمل و نقل</div>
+                    <div class="subcategory" onclick="selectItem('خدمات مسافرتی')">خدمات مسافرتی</div>
+                </div>
+                <div onclick="toggleSubcategories('ساخت و ساز', this)">ساخت و ساز</div>
+                <div class="subcategories" id="subcategories-construction">
+                    <div class="subcategory" onclick="selectItem('ساختمان سازی')">ساختمان سازی</div>
+                    <div class="subcategory" onclick="selectItem('راه و ترابری')">راه و ترابری</div>
+                    <div class="subcategory" onclick="selectItem('نصب تاسیسات')">نصب تاسیسات</div>
+                    <div class="subcategory" onclick="selectItem('مهندسی عمران')">مهندسی عمران</div>
+                    <div class="subcategory" onclick="selectItem('معماری')">معماری</div>
+                </div>
+                <div onclick="toggleSubcategories('فناوری اطلاعات و ارتباطات', this)">فناوری اطلاعات و ارتباطات</div>
+                <div class="subcategories" id="subcategories-ict">
+                    <div class="subcategory" onclick="selectItem('شبکه')">شبکه</div>
+                    <div class="subcategory" onclick="selectItem('امنیت اطلاعات')">امنیت اطلاعات</div>
+                    <div class="subcategory" onclick="selectItem('برنامه‌نویسی')">برنامه‌نویسی</div>
+                    <div class="subcategory" onclick="selectItem('توسعه وب')">توسعه وب</div>
+                    <div class="subcategory" onclick="selectItem('مهندسی نرم‌افزار')">مهندسی نرم‌افزار</div>
+                    <div class="subcategory" onclick="selectItem('تحلیل داده‌ها')">تحلیل داده‌ها</div>
+                    <div class="subcategory" onclick="selectItem('مدیریت پروژه‌های IT')">مدیریت پروژه‌های IT</div>
+                    </div>
+                    <div onclick="toggleSubcategories('هنر و فرهنگ', this)">هنر و فرهنگ</div>
+                    <div class="subcategories" id="subcategories-art-culture">
+                        <div class="subcategory" onclick="selectItem('نقاشی')">نقاشی</div>
+                        <div class="subcategory" onclick="selectItem('مجسمه‌سازی')">مجسمه‌سازی</div>
+                        <div class="subcategory" onclick="selectItem('عکاسی')">عکاسی</div>
+                        <div class="subcategory" onclick="selectItem('طراحی گرافیک')">طراحی گرافیک</div>
+                        <div class="subcategory" onclick="selectItem('موسیقی')">موسیقی</div>
                     </div>
                 </div>
-                <div class="dropdown-menu" id="specialtyDropdown"></div>
             </div>
-            <div class="form-group">
-                <label for="field">زمینه‌های صنفی:</label>
-                <div class="selected-items" id="selectedFields">
-                    <div class="input-container">
-                        <input type="text" id="field" placeholder="انتخاب کنید">
-                        <button type="button" class="dropdown-button">&#9662;</button>
+            <h2>تعیین تخصص، تجربه، علاقمندی و مطالعات</h2>
+            <div class="selected-items" id="selectedSpecializationsContainer"></div>
+            <div class="specialization-dropdown">
+                <button onclick="toggleSpecializationDropdown()">انتخاب تخصص &#9662;</button>
+                <div id="specializationContent" class="specialization-content">
+                    <div onclick="toggleSubcategories('تخصص‌های فنی و مهندسی', this)">تخصص‌های فنی و مهندسی</div>
+                    <div class="subcategories" id="subcategories-engineering">
+                        <div class="subcategory" onclick="selectSpecialization('مهندسی مکانیک')">مهندسی مکانیک</div>
+                        <div class="subcategory" onclick="selectSpecialization('مهندسی عمران')">مهندسی عمران</div>
+                        <div class="subcategory" onclick="selectSpecialization('مهندسی برق')">مهندسی برق</div>
+                        <div class="subcategory" onclick="selectSpecialization('مهندسی صنایع')">مهندسی صنایع</div>
+                        <div class="subcategory" onclick="selectSpecialization('مهندسی شیمی')">مهندسی شیمی</div>
+                    </div>
+                    <div onclick="toggleSubcategories('علوم پزشکی و بهداشتی', this)">علوم پزشکی و بهداشتی</div>
+                    <div class="subcategories" id="subcategories-medical-sciences">
+                        <div class="subcategory" onclick="selectSpecialization('پزشکی عمومی')">پزشکی عمومی</div>
+                        <div class="subcategory" onclick="selectSpecialization('پزشکی تخصصی')">پزشکی تخصصی</div>
+                        <div class="subcategory" onclick="selectSpecialization('پرستاری')">پرستاری</div>
+                        <div class="subcategory" onclick="selectSpecialization('داروسازی')">داروسازی</div>
+                        <div class="subcategory" onclick="selectSpecialization('دندانپزشکی')">دندانپزشکی</div>
+                    </div>
+                    <div onclick="toggleSubcategories('علوم انسانی و اجتماعی', this)">علوم انسانی و اجتماعی</div>
+                    <div class="subcategories" id="subcategories-humanities">
+                        <div class="subcategory" onclick="selectSpecialization('حقوق')">حقوق</div>
+                        <div class="subcategory" onclick="selectSpecialization('روانشناسی')">روانشناسی</div>
+                        <div class="subcategory" onclick="selectSpecialization('علوم تربیتی')">علوم تربیتی</div>
+                        <div class="subcategory" onclick="selectSpecialization('جامعه‌شناسی')">جامعه‌شناسی</div>
+                        <div class="subcategory" onclick="selectSpecialization('علوم سیاسی')">علوم سیاسی</div>
+                    </div>
+                    <div onclick="toggleSubcategories('مالی و اقتصادی', this)">مالی و اقتصادی</div>
+                    <div class="subcategories" id="subcategories-finance">
+                        <div class="subcategory" onclick="selectSpecialization('مدیریت مالی')">مدیریت مالی</div>
+                        <div class="subcategory" onclick="selectSpecialization('حسابداری')">حسابداری</div>
+                        <div class="subcategory" onclick="selectSpecialization('اقتصاد')">اقتصاد</div>
+                        <div class="subcategory" onclick="selectSpecialization('بیمه')">بیمه</div>
+                        <div class="subcategory" onclick="selectSpecialization('بانکداری')">بانکداری</div>
+                    </div>
+                    <div onclick="toggleSubcategories('آموزش', this)">آموزش</div>
+                    <div class="subcategories" id="subcategories-education">
+                        <div class="subcategory" onclick="selectSpecialization('آموزش ابتدایی')">آموزش ابتدایی</div>
+                        <div class="subcategory" onclick="selectSpecialization('آموزش متوسطه')">آموزش متوسطه</div>
+                        <div class="subcategory" onclick="selectSpecialization('آموزش عالی')">آموزش عالی</div>
+                        <div class="subcategory" onclick="selectSpecialization('آموزش فنی و حرفه‌ای')">آموزش فنی و حرفه‌ای</div>
+                        <div class="subcategory" onclick="selectSpecialization('آموزش زبان')">آموزش زبان</div>
+                    </div>
+                    <div onclick="toggleSubcategories('فناوری اطلاعات', this)">فناوری اطلاعات</div>
+                    <div class="subcategories" id="subcategories-it">
+                        <div class="subcategory" onclick="selectSpecialization('برنامه‌نویسی')">برنامه‌نویسی</div>
+                        <div class="subcategory" onclick="selectSpecialization('توسعه وب')">توسعه وب</div>
+                        <div class="subcategory" onclick="selectSpecialization('تحلیل داده‌ها')">تحلیل داده‌ها</div>
+                        <div class="subcategory" onclick="selectSpecialization('مدیریت پروژه‌های IT')">مدیریت پروژه‌های IT</div>
+                        <div class="subcategory" onclick="selectSpecialization('امنیت اطلاعات')">امنیت اطلاعات</div>
+                    </div>
+                    <div onclick="toggleSubcategories('هنری و خلاقه', this)">هنری و خلاقه</div>
+                    <div class="subcategories" id="subcategories-artistic">
+                        <div class="subcategory" onclick="selectSpecialization('طراحی گرافیک')">طراحی گرافیک</div>
+                        <div class="subcategory" onclick="selectSpecialization('نقاشی')">نقاشی</div>
+                        <div class="subcategory" onclick="selectSpecialization('موسیقی')">موسیقی</div>
+                        <div class="subcategory" onclick="selectSpecialization('عکاسی')">عکاسی</div>
+                        <div class="subcategory" onclick="selectSpecialization('مجسمه‌سازی')">مجسمه‌سازی</div>
                     </div>
                 </div>
-                <div class="dropdown-menu" id="fieldDropdown"></div>
             </div>
-            <div class="form-group">
-                <button type="submit">ثبت</button>
-            </div>
-        </form>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-$(document).ready(function() {
-    const specialties = {
-        "مهندسی": ["برنامه‌نویسی", "مهندسی برق"],
-        "علوم انسانی": ["حقوق", "مدیریت"],
-        "پزشکی": ["پزشکی"],
-        "فناوری": ["طراحی وب"]
-    };
-
-    const fields = {
-        "آی‌تی": ["آی‌تی", "امنیت سایبری"],
-        "سلامت": ["سلامت", "تغذیه"],
-        "قضایی": ["قضایی", "حقوقی"],
-        "بازرگانی": ["بازرگانی", "مدیریت منابع انسانی"],
-        "هنر": ["هنر", "موسیقی"]
-    };
-
-    function filterDropdown(data, query) {
-        const result = {};
-        for (const category in data) {
-            const filteredItems = data[category].filter(item => item.includes(query));
-            if (filteredItems.length > 0) {
-                result[category] = filteredItems;
-            }
-        }
-        return result;
-    }
-
-    function createDropdown(data, dropdownId, inputId) {
-        const dropdown = $(`#${dropdownId}`);
-        dropdown.empty();
-        for (const category in data) {
-            const categoryItem = $('<div>').addClass('dropdown-item').text(category);
-            const nestedMenu = $('<div>').addClass('nested-menu');
-            data[category].forEach(item => {
-                const nestedItem = $('<div>').addClass('nested-item').text(item);
-                nestedItem.on('click', function() {
-                    addSelectedItem(item, inputId);
-                });
-                nestedMenu.append(nestedItem);
-            });
-            categoryItem.append(nestedMenu);
-            dropdown.append(categoryItem);
-        }
-    }
-
-    function addSelectedItem(item, inputId) {
-        const input = $(`#${inputId}`);
-        const selectedItems = input.closest('.selected-items');
-        const selectedItem = $('<div>').addClass('selected-item').text(item);
-        const removeItem = $('<span>').addClass('remove-item').text('×');
-        removeItem.on('click', function() {
-            selectedItem.remove();
-            updateHiddenInput(inputId);
-        });
-        selectedItem.append(removeItem);
-        selectedItems.append(selectedItem);
-        updateHiddenInput(inputId);
-        input.val('');
-        $(`#${inputId}Dropdown`).hide();
-    }
-
-    function updateHiddenInput(inputId) {
-        const selectedItems = [];
-        $(`#selected${inputId.charAt(0).toUpperCase() + inputId.slice(1)} .selected-item`).each(function() {
-            selectedItems.push($(this).text().trim());
-        });
-        $(`#hidden${inputId.charAt(0).toUpperCase() + inputId.slice(1)}`).val(selectedItems.join(','));
-    }
-
-    function toggleDropdown(inputId, dropdownId) {
-        const input = $(`#${inputId}`);
-        const inputVal = input.val().trim();
-        const filteredData = filterDropdown(inputId === 'specialty' ? specialties : fields, inputVal);
-        createDropdown(filteredData, dropdownId, inputId);
-        $(`#${dropdownId}`).show();
-    }
-
-    $('.dropdown-button').on('click', function() {
-        const inputId = $(this).siblings('input').attr('id');
-        const dropdownId = inputId === 'specialty' ? 'specialtyDropdown' : 'fieldDropdown';
-        toggleDropdown(inputId, dropdownId);
-    });
-
-    $('#specialty, #field').on('input', function() {
-        const inputId = $(this).attr('id');
-        const dropdownId = inputId === 'specialty' ? 'specialtyDropdown' : 'fieldDropdown';
-        toggleDropdown(inputId, dropdownId);
-    });
-
-    $(document).on('mouseenter', '.dropdown-item', function() {
-        $(this).children('.nested-menu').show();
-    });
-
-    $(document).on('mouseleave', '.dropdown-item', function() {
-        $(this).children('.nested-menu').hide();
-    });
-
-    $(document).on('click', function(event) {
-        if (!$(event.target).closest('.form-group').length) {
-            $('.dropdown-menu').hide();
-        }
-    });
-
-    $('#specialtyForm').on('submit', function(event) {
-        event.preventDefault();
-
-        const formData = {
-            specialties: $('#hiddenSpecialty').val().split(','),
-            fields: $('#hiddenField').val().split(',')
-        };
-
-        if (formData.specialties.length === 0 || formData.fields.length === 0) {
-            alert('لطفاً حداقل یک تخصص و یک زمینه صنفی را انتخاب کنید.');
-            return;
-        }
-
-        console.log(formData); // نمایش داده‌ها در کنسول برای بررسی
-
-        $.ajax({
-            url: 'http://localhost:3001/save_specialties', // تغییر پورت به 3001
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(formData),
-            success: function(response) {
-                alert('اطلاعات شما با موفقیت ثبت شد!');
-            },
-            error: function(xhr, status, error) {
-                alert('خطا در ثبت اطلاعات: ' + error);
-            }
-        });
-    });
-
-    // فیلدهای مخفی برای ذخیره داده‌های انتخابی
-    $('form').append('<input type="hidden" id="hiddenSpecialty"><input type="hidden" id="hiddenField">');
-});
-
-    </script>    
+            <button type="button" onclick="validateForm()">ثبت</button>
+        </div>
     
-    <script src="../scripts/specialties.js"></script>
-    <script src="../scripts/grouping.js"></script>
+        <script>
+            const selectedItemsContainer = document.getElementById('selectedItemsContainer');
+            const dropdownContent = document.getElementById('dropdownContent');
+            const specializationContent = document.getElementById('specializationContent');
+            const selectedSpecializationsContainer = document.getElementById('selectedSpecializationsContainer');
+    
+            function toggleDropdown() {
+                if (specializationContent.style.display === 'block') {
+                    specializationContent.style.display = 'none';
+                }
+                dropdownContent.style.display = dropdownContent.style.display === 'block' ? 'none' : 'block';
+            }
+    
+            function toggleSpecializationDropdown() {
+                if (dropdownContent.style.display === 'block') {
+                    dropdownContent.style.display = 'none';
+                }
+                specializationContent.style.display = specializationContent.style.display === 'block' ? 'none' : 'block';
+            }
+    
+            function toggleSubcategories(industry, element) {
+                const subcategoriesDiv = element.nextElementSibling;
+                if (subcategoriesDiv.style.display === 'block') {
+                    subcategoriesDiv.style.display = 'none';
+                } else {
+                    const allSubcategories = document.querySelectorAll('.subcategories');
+                    allSubcategories.forEach(sub => sub.style.display = 'none');
+                    subcategoriesDiv.style.display = 'block';
+                }
+            }
+    
+            function selectItem(item) {
+                if (!Array.from(selectedItemsContainer.children).some(selected => selected.textContent.includes(item))) {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'item';
+                    itemDiv.textContent = item;
+    
+                    const removeBtn = document.createElement('span');
+                removeBtn.className = 'remove-item';
+                removeBtn.textContent = '×';
+                removeBtn.onclick = function() {
+                    selectedItemsContainer.removeChild(itemDiv);
+                };
+
+                itemDiv.appendChild(removeBtn);
+                selectedItemsContainer.appendChild(itemDiv);
+            } else {
+                alert('این صنف قبلاً انتخاب شده است!');
+            }
+        }
+
+        function selectSpecialization(specialization) {
+            if (!Array.from(selectedSpecializationsContainer.children).some(selected => selected.textContent.includes(specialization))) {
+                const specializationDiv = document.createElement('div');
+                specializationDiv.className = 'item';
+                specializationDiv.textContent = specialization;
+
+                const removeBtn = document.createElement('span');
+                removeBtn.className = 'remove-item';
+                removeBtn.textContent = '×';
+                removeBtn.onclick = function() {
+                    selectedSpecializationsContainer.removeChild(specializationDiv);
+                };
+
+                specializationDiv.appendChild(removeBtn);
+                selectedSpecializationsContainer.appendChild(specializationDiv);
+            } else {
+                alert('این تخصص قبلاً انتخاب شده است!');
+            }
+        }
+
+        function validateForm() {
+            const selectedItems = Array.from(selectedItemsContainer.children).map(item => item.textContent.replace('×', '').trim());
+            const selectedSpecializations = Array.from(selectedSpecializationsContainer.children).map(item => item.textContent.replace('×', '').trim());
+
+            if (selectedItems.length === 0) {
+                alert('لطفاً حداقل یک زمینه صنفی را انتخاب کنید.');
+                return;
+            }
+
+            if (selectedSpecializations.length === 0) {
+                alert('لطفاً حداقل یک تخصص را انتخاب کنید.');
+                return;
+            }
+
+            const formData = {
+                fields: selectedItems.join(', '),
+                specializations: selectedSpecializations.join(', ')
+            };
+
+            alert('اطلاعات با موفقیت ثبت شد: ' + JSON.stringify(formData));
+            clearForm();
+        }
+
+        function clearForm() {
+            selectedItemsContainer.innerHTML = '';
+            selectedSpecializationsContainer.innerHTML = '';
+            const allSubcategories = document.querySelectorAll('.subcategories');
+            allSubcategories.forEach(sub => sub.style.display = 'none');
+            const dropdowns = [dropdownContent, specializationContent];
+            dropdowns.forEach(drop => drop.style.display = 'none');
+        }
+    </script>
 </body>
 </html>

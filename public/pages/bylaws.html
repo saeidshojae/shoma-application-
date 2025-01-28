@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اساسنامه</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/shabnam-font@v3.0.1/dist/font-face.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Shabnam', sans-serif;
+            direction: rtl;
+            text-align: right;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+            box-sizing: border-box;
+            position: relative;
+            overflow-y: auto;
+        }
+        .container h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #4CAF50;
+        }
+        .accordion {
+            margin-bottom: 20px;
+        }
+        .accordion-item {
+            border-bottom: 1px solid #ddd;
+        }
+        .accordion-header {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #f9f9f9;
+        }
+        .accordion-body {
+            display: none;
+            padding: 10px;
+            background-color: #fff;
+        }
+        .form-group {
+            text-align: center;
+        }
+        .form-group button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+            .form-group {
+                margin-bottom: 10px;
+            }
+            .form-group button {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>اساسنامه</h2>
+        <div class="accordion" id="bylawsAccordion">
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion('section1')">مقدمه</div>
+                <div class="accordion-body" id="section1">
+                    <p>این مقدمه اساسنامه است. متن کوتاهی برای مقدمه.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion('section2')">فصل اول: کلیات</div>
+                <div class="accordion-body" id="section2">
+                    <p>متن کوتاهی برای فصل اول: کلیات.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion('section3')">فصل دوم: مقررات مربوط به عضویت</div>
+                <div class="accordion-body" id="section3">
+                    <p>متن کوتاهی برای فصل دوم: مقررات مربوط به عضویت.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion('section4')">فصل سوم: ساختار و ارکان شما</div>
+                <div class="accordion-body" id="section4">
+                    <p>متن کوتاهی برای فصل سوم: ساختار و ارکان شما.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion('section5')">فصل چهارم: انتخابات</div>
+                <div class="accordion-body" id="section5">
+                    <p>متن کوتاهی برای فصل چهارم: انتخابات.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion('section6')">فصل پنجم: مقررات مالی</div>
+                <div class="accordion-body" id="section6">
+                    <p>متن کوتاهی برای فصل پنجم: مقررات مالی.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header" onclick="toggleAccordion('section7')">فصل ششم: مقررات مختلف</div>
+                <div class="accordion-body" id="section7">
+                    <p>متن کوتاهی برای فصل ششم: مقررات مختلف.</p>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="checkbox" id="terms" name="terms" onchange="checkAgreement()" required>
+            <label for="terms">قوانین و اساسنامه را خوانده و می‌پذیرم</label>
+        </div>
+        <div class="form-group">
+            <button type="button" onclick="closePopup()">بستن</button>
+        </div>
+    </div>
+    <script>
+        function toggleAccordion(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.style.display = section.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function checkAgreement() {
+            const isChecked = document.getElementById('terms').checked;
+            if (isChecked) {
+                localStorage.setItem('agreedToBylaws', 'true');
+            } else {
+                localStorage.removeItem('agreedToBylaws');
+            }
+        }
+
+        function closePopup() {
+            if (localStorage.getItem('agreedToBylaws')) {
+                window.opener.navigateToSlide(3);
+            }
+            window.close();
+        }
+
+        window.onload = function() {
+            document.getElementById('terms').checked = false;
+        }
+    </script>
+</body>
+</html>

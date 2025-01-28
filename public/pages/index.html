@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحه ایندکس</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/shabnam-font@v3.0.1/dist/font-face.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Shabnam', sans-serif;
+            direction: rtl;
+            text-align: right;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 600px;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .container h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #4CAF50;
+        }
+        .slide {
+            display: none;
+            text-align: center;
+        }
+        .slide img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .active {
+            display: block;
+        }
+        .navigation-dots {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .navigation-dots span {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            margin: 0 5px;
+            background-color: #ddd;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .navigation-dots .active-dot {
+            background-color: #4CAF50;
+        }
+        .form-group button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            position: relative;
+            text-align: center;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+            .form-group {
+                margin-bottom: 10px;
+            }
+            .form-group button {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>به برنامه ما خوش آمدید!</h2>
+        <div class="slide active" id="slide1">
+            <img src="images/image1.jpg" alt="تصویر 1">
+            <div class="explanation">
+                <p>این برنامه به شما کمک می‌کند تا به راحتی لوکیشن خود را ثبت کنید و تخصص‌های خود را معرفی نمایید.</p>
+            </div>
+        </div>
+        <div class="slide" id="slide2">
+            <img src="images/image2.jpg" alt="تصویر 2">
+            <div class="explanation">
+                <p>لطفاً قبل از ثبت‌نام، <a href="#" onclick="openPopup('bylaws.html')">قوانین و اساسنامه</a> را مطالعه کنید.</p>
+            </div>
+        </div>
+        <div class="slide" id="slide3">
+            <form id="indexForm" action="registration.html" method="get">
+                <img src="images/image3.jpg" alt="تصویر 3">
+                <div class="form-group">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">قوانین و <a href="#" onclick="openPopup('bylaws.html')">اساسنامه</a> را خوانده و می‌پذیرم</label>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-success">ادامه به ثبت‌نام</button>
+                </div>
+            </form>
+        </div>
+        <div class="navigation-dots">
+            <span class="active-dot" onclick="navigateToSlide(1)"></span>
+            <span onclick="navigateToSlide(2)"></span>
+            <span onclick="navigateToSlide(3)"></span>
+        </div>
+    </div>
+    <script>
+        function navigateToSlide(slideNumber) {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.navigation-dots span');
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active-dot'));
+            document.getElementById('slide' + slideNumber).classList.add('active');
+            dots[slideNumber - 1].classList.add('active-dot');
+        }
+
+        function openPopup(url) {
+            const popup = window.open(url, 'popup', 'width=800,height=600');
+            popup.onbeforeunload = function() {
+                const agreed = localStorage.getItem('agreedToBylaws');
+                if (agreed) {
+                    document.getElementById('terms').checked = true;
+                    navigateToSlide(3);
+                }
+            };
+            return false;
+        }
+
+        window.onload = function() {
+            const agreed = localStorage.getItem('agreedToBylaws');
+            if (!agreed) {
+                navigateToSlide(1);
+            }
+        }
+    </script>
+</body>
+</html>

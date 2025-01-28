@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پروژه انتخاب تخصص</title>
+    <link rel="stylesheet" href="../styles/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #fafbfc;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+        .container h2 {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 35px;
+            position: relative;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .form-group .input-container {
+            display: flex;
+            align-items: center;
+            position: relative;
+            width: 100%;
+        }
+        .form-group input {
+            width: calc(100% - 40px);
+            padding: 8px;
+            box-sizing: border-box;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .form-group .dropdown-button {
+            width: 40px;
+            height: 40px;
+            background-color: #0da85b;
+            color: rgb(249, 255, 255);
+            border: none;
+            cursor: pointer;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+        }
+        .form-group button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .form-group button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .dropdown-menu {
+            position: absolute;
+            display: none;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            padding: 10px;
+            z-index: 1000;
+            width: 30%;
+            top: 100%;
+            left: 0;
+        }
+        .dropdown-item {
+            padding: 5px;
+            cursor: pointer;
+            position: relative;
+            border-bottom: 1px solid #ddd;
+        }
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+        .dropdown-item:hover .nested-menu {
+            display: block;
+        }
+        .nested-menu {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 100%;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .nested-item {
+            padding: 5px;
+            cursor: pointer;
+            border-bottom: 1px solid #ddd;
+        }
+        .nested-item:last-child {
+            border-bottom: none;
+        }
+        .nested-item:hover {
+            background-color: #f0f0f0;
+        }
+        .selected-item {
+            display: inline-block;
+            background-color: #d1ecf1;
+            padding: 5px;
+            margin: 2px;
+            border-radius: 3px;
+            position: relative;
+            margin-right: 5px;
+        }
+        .selected-item .remove-item {
+            position: absolute;
+            top: 0;
+            right: 0;
+            cursor: pointer;
+            padding: 2px 5px;
+            background-color: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+        }
+        .form-group .selected-items {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            min-height: 40px;
+        }
+        .form-group .selected-items input {
+            border: none;
+            outline: none;
+            flex: 1;
+        }
+        @media (min-width: 600px) {
+            .container {
+                width: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>تخصص‌ها و زمینه‌های صنفی</h2>
+        <form id="specialtyForm">
+            <div class="form-group">
+                <label for="specialty">تخصص‌ها:</label>
+                <div class="selected-items" id="selectedSpecialties">
+                    <div class="input-container">
+                        <input type="text" id="specialty" placeholder="انتخاب کنید">
+                        <button type="button" class="dropdown-button">&#9662;</button>
+                    </div>
+                </div>
+                <div class="dropdown-menu" id="specialtyDropdown"></div>
+            </div>
+            <div class="form-group">
+                <label for="field">زمینه‌های صنفی:</label>
+                <div class="selected-items" id="selectedFields">
+                    <div class="input-container">
+                        <input type="text" id="field" placeholder="انتخاب کنید">
+                        <button type="button" class="dropdown-button">&#9662;</button>
+                    </div>
+                </div>
+                <div class="dropdown-menu" id="fieldDropdown"></div>
+            </div>
+            <div class="form-group">
+                <button type="submit">ثبت</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+$(document).ready(function() {
+    const specialties = {
+        "مهندسی": ["برنامه‌نویسی", "مهندسی برق"],
+        "علوم انسانی": ["حقوق", "مدیریت"],
+        "پزشکی": ["پزشکی"],
+        "فناوری": ["طراحی وب"]
+    };
+
+    const fields = {
+        "آی‌تی": ["آی‌تی", "امنیت سایبری"],
+        "سلامت": ["سلامت", "تغذیه"],
+        "قضایی": ["قضایی", "حقوقی"],
+        "بازرگانی": ["بازرگانی", "مدیریت منابع انسانی"],
+        "هنر": ["هنر", "موسیقی"]
+    };
+
+    function filterDropdown(data, query) {
+        const result = {};
+        for (const category in data) {
+            const filteredItems = data[category].filter(item => item.includes(query));
+            if (filteredItems.length > 0) {
+                result[category] = filteredItems;
+            }
+        }
+        return result;
+    }
+
+    function createDropdown(data, dropdownId, inputId) {
+        const dropdown = $(`#${dropdownId}`);
+        dropdown.empty();
+        for (const category in data) {
+            const categoryItem = $('<div>').addClass('dropdown-item').text(category);
+            const nestedMenu = $('<div>').addClass('nested-menu');
+            data[category].forEach(item => {
+                const nestedItem = $('<div>').addClass('nested-item').text(item);
+                nestedItem.on('click', function() {
+                    addSelectedItem(item, inputId);
+                });
+                nestedMenu.append(nestedItem);
+            });
+            categoryItem.append(nestedMenu);
+            dropdown.append(categoryItem);
+        }
+    }
+
+    function addSelectedItem(item, inputId) {
+        const input = $(`#${inputId}`);
+        const selectedItems = input.closest('.selected-items');
+        const selectedItem = $('<div>').addClass('selected-item').text(item);
+        const removeItem = $('<span>').addClass('remove-item').text('×');
+        removeItem.on('click', function() {
+            selectedItem.remove();
+            updateHiddenInput(inputId);
+        });
+        selectedItem.append(removeItem);
+        selectedItems.append(selectedItem);
+        updateHiddenInput(inputId);
+        input.val('');
+        $(`#${inputId}Dropdown`).hide();
+    }
+
+    function updateHiddenInput(inputId) {
+        const selectedItems = [];
+        $(`#selected${inputId.charAt(0).toUpperCase() + inputId.slice(1)} .selected-item`).each(function() {
+            selectedItems.push($(this).text().trim());
+        });
+        $(`#hidden${inputId.charAt(0).toUpperCase() + inputId.slice(1)}`).val(selectedItems.join(','));
+    }
+
+    function toggleDropdown(inputId, dropdownId) {
+        const input = $(`#${inputId}`);
+        const inputVal = input.val().trim();
+        const filteredData = filterDropdown(inputId === 'specialty' ? specialties : fields, inputVal);
+        createDropdown(filteredData, dropdownId, inputId);
+        $(`#${dropdownId}`).show();
+    }
+
+    $('.dropdown-button').on('click', function() {
+        const inputId = $(this).siblings('input').attr('id');
+        const dropdownId = inputId === 'specialty' ? 'specialtyDropdown' : 'fieldDropdown';
+        toggleDropdown(inputId, dropdownId);
+    });
+
+    $('#specialty, #field').on('input', function() {
+        const inputId = $(this).attr('id');
+        const dropdownId = inputId === 'specialty' ? 'specialtyDropdown' : 'fieldDropdown';
+        toggleDropdown(inputId, dropdownId);
+    });
+
+    $(document).on('mouseenter', '.dropdown-item', function() {
+        $(this).children('.nested-menu').show();
+    });
+
+    $(document).on('mouseleave', '.dropdown-item', function() {
+        $(this).children('.nested-menu').hide();
+    });
+
+    $(document).on('click', function(event) {
+        if (!$(event.target).closest('.form-group').length) {
+            $('.dropdown-menu').hide();
+        }
+    });
+
+    $('#specialtyForm').on('submit', function(event) {
+        event.preventDefault();
+
+        const formData = {
+            specialties: $('#hiddenSpecialty').val().split(','),
+            fields: $('#hiddenField').val().split(',')
+        };
+
+        if (formData.specialties.length === 0 || formData.fields.length === 0) {
+            alert('لطفاً حداقل یک تخصص و یک زمینه صنفی را انتخاب کنید.');
+            return;
+        }
+
+        console.log(formData); // نمایش داده‌ها در کنسول برای بررسی
+
+        $.ajax({
+            url: 'http://localhost:3001/save_specialties', // تغییر پورت به 3001
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(formData),
+            success: function(response) {
+                alert('اطلاعات شما با موفقیت ثبت شد!');
+            },
+            error: function(xhr, status, error) {
+                alert('خطا در ثبت اطلاعات: ' + error);
+            }
+        });
+    });
+
+    // فیلدهای مخفی برای ذخیره داده‌های انتخابی
+    $('form').append('<input type="hidden" id="hiddenSpecialty"><input type="hidden" id="hiddenField">');
+});
+
+    </script>    
+    
+    <script src="../scripts/specialties.js"></script>
+    <script src="../scripts/grouping.js"></script>
+</body>
+</html>
